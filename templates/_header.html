@@ -14,12 +14,13 @@
 
     <nav>
         <a href="/">Home</a>
+
         <a href="/signup">Sign up</a>
 
         {% if not user %}
             <a href="/login">Log in</a>
         {% else %}
-            <a href="/logout">Log out</a>
+            <a href="/profile">{{user.user_first_name}} {{user.user_last_name}}</a>
         {% endif %}
 
     </nav>

@@ -36,7 +36,7 @@ def show_login():
     try:
         user = session.get("user", "")
         if user: return "you are already logged in"  # TODO: Redirect to profile page if logged in
-        return render_template("page_login.html", REGEX_USER_EMAIL=x.REGEX_USER_EMAIL)
+        return render_template("page_login.html", x=x)
     except Exception as ex:
         ic(ex)
         return "ups", 500
@@ -115,7 +115,7 @@ def api_login():
 
         user.pop("user_password")
         session["user"] = user
-
+        
         return jsonify({"error_message": "Logging in..."})
 
     except Exception as ex:

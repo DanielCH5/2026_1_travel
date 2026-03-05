@@ -1,8 +1,8 @@
 {% include "_header.html" %}
 
      <form method="POST" action="/api-login" id="loginForm">
-        <input id="loginForm_userEmail" name="user_email" type="text" placeholder="email">
-        <input id="loginForm_userPassword" name="user_password" type="text" placeholder="password">
+        <input id="userEmail" name="user_email" type="text" placeholder="email" data-regex="{{x.REGEX_USER_EMAIL}}">
+        <input id="userPassword" name="user_password" type="text" placeholder="password" data-regex="{{x.REGEX_USER_PASSWORD}}" data-min="{{x.USER_PASSWORD_MIN}}" data-max="{{x.USER_PASSWORD_MAX}}">
         <button>
             Login
         </button>
