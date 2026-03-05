@@ -33,6 +33,7 @@ def show_index():
     except Exception as ex:
         ic(ex)
         return "ups"
+##############################
 @app.get("/login")
 @x.no_cache
 def show_login():
@@ -43,7 +44,16 @@ def show_login():
     except Exception as ex:
         ic(ex)
         return "ups", 500
-
+##############################
+@app.get("/create-travel")
+@x.no_cache
+def show_create_travel():
+    try:
+        user = session.get("user", "")
+        return render_template("page_create_travel.html", user=user, x=x)
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
     
 ##############################
 @app.post("/api-create-user")
@@ -128,29 +138,30 @@ def api_create_travel():
         city_fk_q = "SELECT city_pk FROM cities WHERE city_name = %s AND city_region = %s"
         cursor.execute(city_fk_q, (city_name, city_region))
         city_row = cursor.fetchone()
+
         if not city_row:
             city_q = "INSERT INTO cities VALUES(NULL, %s, %s, %s)"
             cursor.execute(city_q, (country_fk, city_name, city_region))
             db.commit()
-            
-        cursor.execute(city_fk_q, (city_name, city_region))
-        city_row = cursor.fetchone()
+            cursor.execute(city_fk_q, (city_name, city_region))
+            city_row = cursor.fetchone()
         
-
         city_fk = city_row["city_pk"]
 
         travel_pk = uuid.uuid4().hex
-        travel_date_from = int(time.time())
+        travel_date_from = int(time.time()) #TODO: Add real things and validations to this
         travel_date_to = int(time.time()) + 1
-
-        travel_q = "INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s)"
-
+        user_updated = int(time.time())
+        travel_q = """INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s);""" 
         cursor.execute(travel_q, (travel_pk, travel_title, city_fk, user["user_pk"], travel_date_from, travel_date_to, travel_description))
         db.commit()
-
+        user_q = "UPDATE users SET user_updated_at = %s WHERE user_pk = %s"
+        cursor.execute(user_q, (user_updated, user["user_pk"]))
+        db.commit()  
+        # There's gotta be an easier way to make the queries lol
         return f"""
                 ok
-                """ # TODO: Make it login and create session 
+                """ # TODO: Make it redirect to created travel post 
     except Exception as ex:
         ic(ex)
         if "Duplicate entry" in str(ex) and "user_email" in str(ex):

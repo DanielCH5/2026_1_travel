@@ -1,0 +1,54 @@
+{% include "_header.html" %}
+<main>
+    <form mix-post="/api-create-user" autocomplete="off">
+        <div>
+            <label for="">
+                Title <span>{{ x.TRAVEL_TITLE_MIN }} to {{ x.TRAVEL_TITLE_MAX }} characters</span>
+            </label>
+            <input name="travel_title" type="text" placeholder="Title for your travel destination" value="" 
+            mix-validate="{{x.REGEX_TRAVEL_TITLE}}">
+        </div>
+
+        <div>
+            <label for="">
+                City name <span>{{ x.CITY_NAME_MIN }} to {{ x.CITY_NAME_MAX }} characters</span>
+            </label>
+            <input name="city_name" type="text" placeholder="City name" value="" 
+            mix-validate="{{x.REGEX_CITY_NAME}}">
+        </div>
+
+        <div>
+            <label for="">
+                Region <span>{{ x.CITY_REGION_MIN }} to {{ x.CITY_REGION_MAX }} characters</span>
+            </label>
+            <input name="city_region" type="text" placeholder="Region" value="" 
+            mix-validate="{{x.REGEX_CITY_REGION}}">
+        </div>
+
+        <div>
+            <label for="">
+                Country
+            </label>
+            <input name="user_email" type="email" placeholder="user email" value="" 
+            mix-validate="{{x.REGEX_USER_EMAIL}}">
+        </div>
+
+        <div>
+            <label for="">
+                Password <span>{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} characters</span>
+            </label>
+            <input name="user_password" type="password" placeholder="user password" value="" 
+            mix-validate="{{x.REGEX_USER_PASSWORD}}">
+        </div>
+
+
+
+        <button>
+            Signup
+        </button>
+    </form>
+
+</main>
+
+
+{% include "_footer.html" %}
