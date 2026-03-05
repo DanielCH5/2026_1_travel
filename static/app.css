@@ -69,6 +69,8 @@ footer {
 form{
     display: grid;
     gap: 1rem;
+    width: 400px;
+    justify-self: center;
     div{
         display: flex;
         flex-direction: column;

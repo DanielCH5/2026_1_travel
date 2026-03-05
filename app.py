@@ -15,6 +15,7 @@ Session(app)
 
 ##############################
 @app.get("/signup")
+@x.no_cache
 def show_signup():
     try:
         user = session.get("user", "")
@@ -24,6 +25,7 @@ def show_signup():
         return "ups"
 ##############################
 @app.get("/")
+@x.no_cache
 def show_index():
     try:
         user = session.get("user", "")
@@ -32,6 +34,7 @@ def show_index():
         ic(ex)
         return "ups"
 @app.get("/login")
+@x.no_cache
 def show_login():
     try:
         user = session.get("user", "")
@@ -62,7 +65,15 @@ def api_create_user():
         
         cursor.execute(q, (user_pk, user_email, user_hashed_password, user_first_name, user_last_name, user_created_at, user_updated_at))
         db.commit()
-        return "ok" # TODO: Make it login and create session 
+
+        q2 = "SELECT * FROM users WHERE user_pk = %s"
+        cursor.execute(q2, (user_pk,))
+        user = cursor.fetchone()
+        user.pop("user_password")
+        session["user"] = user
+        return f"""
+                <browser mix-redirect="/"></browser>
+                """ # TODO: Make it login and create session 
     except Exception as ex:
         ic(ex)
         if "Duplicate entry" in str(ex) and "user_email" in str(ex):

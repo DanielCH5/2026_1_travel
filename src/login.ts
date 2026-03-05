@@ -12,19 +12,11 @@ async function createLoginMessage(errorResponse) {
 
     loginMessages.appendChild(errorMessageListItem)
 }
-
+// Honestly just a test to see how it's done without mixhtml
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     loginMessages.textContent = "";
-    const inputFields = loginForm.querySelectorAll("input");
-    const formFields = []
 
-    inputFields.forEach((field) => {
-        formFields[field.getAttribute("name")] = field.getAttribute("data-regex")
-    });
-
-    console.log(formFields);
-        
     const formData = new FormData(loginForm);
     const user_email = formData.get("user_email").toString();
     const user_password = formData.get("user_password").toString();
@@ -33,6 +25,7 @@ loginForm.addEventListener("submit", async (e) => {
     if (!user_email.match(USER_EMAIL_REGEX)) {
         const errorResponse = { error_message: "Please enter a valid email" }
         createLoginMessage(errorResponse);
+        return;
     }
 
     if (!user_password.match(USER_PASSWORD_REGEX)) {
