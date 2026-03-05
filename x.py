@@ -79,7 +79,7 @@ def validate_travel_title():
         raise Exception("company_exception travel_title")
     return travel_title
 ##############################  (Maybe ask Santiago how he would validate something like this)
-TRAVEL_DESCRIPTION_MIN = 50
+TRAVEL_DESCRIPTION_MIN = 10
 TRAVEL_DESCRIPTION_MAX = 65535
 REGEX_TRAVEL_DESCRIPTION = f"^.{{{TRAVEL_DESCRIPTION_MIN},{TRAVEL_DESCRIPTION_MAX}}}$"
 def validate_travel_description():
@@ -105,4 +105,13 @@ def validate_city_region():
     if not re.match(REGEX_CITY_REGION, city_region):
         raise Exception("company_exception city_region")
     return city_region
+
+COUNTRY_NAME_MIN = 2
+COUNTRY_NAME_MAX = 100
+REGEX_COUNTRY_NAME = f"^.{{{COUNTRY_NAME_MIN},{COUNTRY_NAME_MAX}}}$"
+def validate_country_name():
+    country_name = request.form.get("country_name", "").strip()
+    if not re.match(REGEX_COUNTRY_NAME, country_name):
+        raise Exception("company_exception country_name")
+    return country_name # TODO: Should change so we can get fk from here already
 ################################################### VALIDATIONS END ####################################################

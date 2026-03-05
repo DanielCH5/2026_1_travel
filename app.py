@@ -101,6 +101,82 @@ def api_create_user():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 ##############################
+@app.post("/api-create-travel")
+def api_create_travel():
+    try:
+        #user = session.get("user", "")
+        user = {
+            "user_pk" : "12341"
+        }
+        # Validations first
+        city_name = x.validate_city_name()
+        city_region = x.validate_city_region()
+        
+        country_name = x.validate_country_name()
+
+        travel_title = x.validate_travel_title()
+        travel_description = x.validate_travel_description()
+
+        db, cursor = x.db()
+
+        country_q = "SELECT country_pk FROM countries WHERE country_name = %s"
+        cursor.execute(country_q, (country_name,))
+        country_row = cursor.fetchone()
+
+        country_fk = country_row["country_pk"]
+
+        city_fk_q = "SELECT city_pk FROM cities WHERE city_name = %s AND city_region = %s"
+        cursor.execute(city_fk_q, (city_name, city_region))
+        city_row = cursor.fetchone()
+        if not city_row:
+            city_q = "INSERT INTO cities VALUES(NULL, %s, %s, %s)"
+            cursor.execute(city_q, (country_fk, city_name, city_region))
+            db.commit()
+            
+        cursor.execute(city_fk_q, (city_name, city_region))
+        city_row = cursor.fetchone()
+        
+
+        city_fk = city_row["city_pk"]
+
+        travel_pk = uuid.uuid4().hex
+        travel_date_from = int(time.time())
+        travel_date_to = int(time.time()) + 1
+
+        travel_q = "INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s)"
+
+        cursor.execute(travel_q, (travel_pk, travel_title, city_fk, user["user_pk"], travel_date_from, travel_date_to, travel_description))
+        db.commit()
+
+        return f"""
+                ok
+                """ # TODO: Make it login and create session 
+    except Exception as ex:
+        ic(ex)
+        if "Duplicate entry" in str(ex) and "user_email" in str(ex):
+            return "Email already in the system", 400
+
+        if "company_exception user_email" in str(ex):
+            ic(ex)
+            return "User email invalid", 400
+
+        if "company_exception user_password" in str(ex):
+            tip = render_template("___tip.html", message="Invalid password, password must be between 8-60 characters", status="error")
+            return f"""<browser mix-update="#tooltip">{tip}</browser>""", 400
+
+        if "company_exception user_first_name" in str(ex):
+            tip = render_template("___tip.html", message="Invalid first name, first name must be between 2-20 characters", status="error")
+            return f"""<browser mix-update="#tooltip">{tip}</browser>""", 400
+
+        if "company_exception user_last_name" in str(ex):
+            tip = render_template("___tip.html", message="Invalid last name, last name must be between 2-20 characters", status="error")
+            return f"""<browser mix-update="#tooltip">{tip}</browser>""", 400
+
+        return "Service under maintenance", 500
+        
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 ##############################
 @app.post("/api-login")
 def api_login():
