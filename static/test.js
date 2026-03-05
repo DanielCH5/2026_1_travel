@@ -1,29 +1,41 @@
 const loginForm = document.getElementById("loginForm");
 const submitLoginFormBtn = loginForm.querySelector("button");
 const loginMessages = document.getElementById("loginErrors");
-async function createLoginMessage(response) {
-    const errorResponse = await response.json();
+async function createLoginMessage(errorResponse) {
     const errorMessageListItem = document.createElement("li");
     errorMessageListItem.textContent = errorResponse.error_message;
     loginMessages.appendChild(errorMessageListItem);
 }
 submitLoginFormBtn.addEventListener("click", async (e) => {
     e.preventDefault();
+    loginMessages.textContent = "";
+    const userEmail = loginForm.querySelector("#loginForm_userEmail").value;
+    const userPassword = loginForm.querySelector("#loginForm_userPassword").value;
+    if (!userEmail.trim()) {
+        const errorResponse = { error_message: "Please enter your email" };
+        createLoginMessage(errorResponse);
+    }
+    if (!userPassword.trim()) {
+        const errorResponse = { error_message: "Please enter your password" };
+        createLoginMessage(errorResponse);
+        return;
+    }
     const response = await fetch("/api-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            user_email: loginForm.querySelector("#loginForm_userEmail").value,
-            user_password: loginForm.querySelector("#loginForm_userPassword").value
+            user_email: userEmail,
+            user_password: userPassword
         })
     });
     if (!response.ok) {
-        createLoginMessage(response);
+        const errorResponse = await response.json();
+        return createLoginMessage(errorResponse);
     }
-    createLoginMessage(response);
-    console.log(response);
+    const errorResponse = await response.json();
+    createLoginMessage(errorResponse);
+    setTimeout(() => {
+        window.location.replace("/");
+    }, 1000);
 });
-const loginForm_userEmail = document.getElementById("loginForm_userEmail").value;
-const loginForm_userPassword = document.getElementById("loginForm_userPassword").value;
-console.log(loginForm.querySelector("button"));
 //# sourceMappingURL=test.js.map

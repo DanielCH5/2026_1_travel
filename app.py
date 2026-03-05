@@ -36,7 +36,7 @@ def show_login():
     try:
         user = session.get("user", "")
         if user: return "you are already logged in"  # TODO: Redirect to profile page if logged in
-        return render_template("page_login.html")
+        return render_template("page_login.html", REGEX_USER_EMAIL=x.REGEX_USER_EMAIL)
     except Exception as ex:
         ic(ex)
         return "ups", 500
@@ -62,7 +62,7 @@ def api_create_user():
         
         cursor.execute(q, (user_pk, user_email, user_hashed_password, user_first_name, user_last_name, user_created_at, user_updated_at))
         db.commit()
-        return redirect("/") # TODO: Make it login and create session 
+        return "ok" # TODO: Make it login and create session 
     except Exception as ex:
         ic(ex)
 
