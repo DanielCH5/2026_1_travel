@@ -35,7 +35,7 @@ def show_index():
 def show_login():
     try:
         user = session.get("user", "")
-        if user: return "you are already logged in"  # TODO: Redirect to profile page if logged in
+        if user: return redirect("/profile")  # TODO: Redirect to profile page if logged in
         return render_template("page_login.html", x=x)
     except Exception as ex:
         ic(ex)

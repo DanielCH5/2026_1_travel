@@ -1,6 +1,6 @@
 const loginForm = document.getElementById("loginForm");
 const submitLoginFormBtn = loginForm.querySelector("button");
-const loginMessages = document.getElementById("loginErrors");
+const loginMessages = document.getElementById("loginMessages");
 const USER_EMAIL_REGEX = document.getElementById("userEmail").getAttribute("data-regex");
 const USER_PASSWORD_REGEX = document.getElementById("userPassword").getAttribute("data-regex");
 const USER_PASSWORD_MIN = document.getElementById("userPassword").getAttribute("data-min");
@@ -10,43 +10,6 @@ async function createLoginMessage(errorResponse) {
     errorMessageListItem.textContent = errorResponse.error_message;
     loginMessages.appendChild(errorMessageListItem);
 }
-/*submitLoginFormBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    loginMessages.textContent = ""
-    const userEmail = (loginForm.querySelector("#loginForm_userEmail") as HTMLInputElement).value;
-    const userPassword = (loginForm.querySelector("#loginForm_userPassword") as HTMLInputElement).value;
-    if (!userEmail.trim()) {
-        const errorResponse = { error_message: "Please enter your email" }
-        createLoginMessage(errorResponse);
-    }
-    if (!userPassword.trim()) {
-        const errorResponse = { error_message: "Please enter your password" }
-        createLoginMessage(errorResponse);
-        return;
-    }
-
-    const response = await fetch("/api-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            user_email: userEmail,
-            user_password: userPassword
-        })
-    })
-
-    if (!response.ok) {
-        const errorResponse = await response.json();
-        return createLoginMessage(errorResponse)
-    }
-
-
-    const errorResponse = await response.json();
-    createLoginMessage(errorResponse)
-    setTimeout(() => {
-        window.location.replace("/")
-    }, 1000)
-})
-*/
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     loginMessages.textContent = "";
@@ -60,6 +23,10 @@ loginForm.addEventListener("submit", async (e) => {
     if (!user_password.match(USER_PASSWORD_REGEX)) {
         const errorResponse = { error_message: `Password must be between ${USER_PASSWORD_MIN} and ${USER_PASSWORD_MAX}` };
         createLoginMessage(errorResponse);
+        return;
+    }
+    else if (!user_email.match(USER_EMAIL_REGEX)) {
+        // Prevent from making call to server 
         return;
     }
     const response = await fetch("/api-login", {
