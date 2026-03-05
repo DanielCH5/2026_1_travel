@@ -18,7 +18,7 @@ Session(app)
 def show_signup():
     try:
         user = session.get("user", "")
-        return render_template("page_signup.html", user=user)
+        return render_template("page_signup.html", user=user, x=x)
     except Exception as ex:
         ic(ex)
         return "ups"
@@ -65,8 +65,6 @@ def api_create_user():
         return "ok" # TODO: Make it login and create session 
     except Exception as ex:
         ic(ex)
-
-
         if "Duplicate entry" in str(ex) and "user_email" in str(ex):
             return "Email already in the system", 400
 

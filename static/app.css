@@ -65,3 +65,22 @@ footer {
   height: 0.5rem;
   background-color: gray;
 }
+
+form{
+    display: grid;
+    gap: 1rem;
+    div{
+        display: flex;
+        flex-direction: column;
+        input{
+            width: 100%;
+        }
+    }
+}
+label{
+    display: flex;
+    span{
+        margin-left: auto;
+        color: rgb(150, 150, 150);
+    }
+}
