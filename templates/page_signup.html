@@ -1,0 +1,14 @@
+{% include "_header.html" %}
+
+<main>
+    <form action="/api-create-user" method="POST">
+        <input name="user_first_name" type="text" placeholder="First name">
+        <input name="user_last_name" type="text" placeholder="Last name">
+        <input name="user_username" type="text" placeholder="Username">
+        <input name="user_password" type="text" placeholder="Password">
+        <button>Sign up</button>
+    </form>
+
+</main>
+
+{% include "_footer.html" %}
