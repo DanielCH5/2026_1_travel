@@ -2,6 +2,7 @@ from flask import request, make_response
 import mysql.connector
 import re # Regular expressions also called Regex
 from functools import wraps
+from icecream import ic
 ##############################
 def db():
     try:
@@ -34,7 +35,7 @@ def no_cache(view):
 ##############################
 REGEX_USER_EMAIL = "^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
 def validate_user_email():
-    user_email = request.form.get("user_email", "").strip()
+    user_email = request.json["user_email"].strip()
     if not re.match(REGEX_USER_EMAIL, user_email):
         raise Exception("company_exception user_email")
     return user_email
@@ -44,7 +45,7 @@ USER_PASSWORD_MIN = 8
 USER_PASSWORD_MAX = 50 # Should be hashed, set to 255 in DB
 REGEX_USER_PASSWORD = f"^.{{{USER_PASSWORD_MIN},{USER_PASSWORD_MAX}}}$"
 def validate_user_password():
-    user_password = request.form.get("user_password", "").strip()
+    user_password = request.json["user_password"].strip()
     if not re.match(REGEX_USER_PASSWORD, user_password):
         raise Exception("company_exception user_password")
     return user_password

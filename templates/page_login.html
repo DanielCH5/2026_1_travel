@@ -1,10 +1,16 @@
 {% include "_header.html" %}
 
-     <form mix-post="/login">
-        <input name="user_email" type="text" placeholder="email">
-        <input name="user_password" type="text" placeholder="password">
+     <form method="POST" action="/api-login" id="loginForm">
+        <input id="loginForm_userEmail" name="user_email" type="text" placeholder="email">
+        <input id="loginForm_userPassword" name="user_password" type="text" placeholder="password">
         <button>
             Login
         </button>
     </form>
+
+
+    <li id="loginErrors">
+        
+    </li>
+    
 {% include "_footer.html" %}

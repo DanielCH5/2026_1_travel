@@ -277,7 +277,7 @@ CREATE TABLE `travels` (
 
 CREATE TABLE `users` (
   `user_pk` char(32) NOT NULL,
-  `user_username` varchar(20) NOT NULL,
+  `user_email` varchar(100) NOT NULL,
   `user_password` varchar(255) NOT NULL,
   `user_first_name` varchar(20) NOT NULL,
   `user_last_name` varchar(20) NOT NULL,
@@ -289,8 +289,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_pk`, `user_username`, `user_password`, `user_first_name`, `user_last_name`, `user_created_at`, `user_updated_at`) VALUES
-('25a70980067d4c73a6326270b10fc5d3', 'aaaa', 'aaaaaaaa', 'aaaaaaaaaaaaaa', 'bbb', 1772205120, 1772205120);
+INSERT INTO `users` (`user_pk`, `user_email`, `user_password`, `user_first_name`, `user_last_name`, `user_created_at`, `user_updated_at`) VALUES
+('25a70980067d4c73a6326270b10fc5d3', 'aaa@aaa.aa', 'aaaaaaaa', 'aaaaaaaaaaaaaa', 'bbb', 1772205120, 1772205120);
 
 --
 -- Indexes for dumped tables
@@ -323,7 +323,7 @@ ALTER TABLE `travels`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_pk`),
-  ADD UNIQUE KEY `user_username` (`user_username`);
+  ADD UNIQUE KEY `user_email` (`user_email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
