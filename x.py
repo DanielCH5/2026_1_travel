@@ -3,6 +3,7 @@ import mysql.connector
 import re # Regular expressions also called Regex
 from functools import wraps
 from icecream import ic
+from datetime import datetime, timezone
 ##############################
 def db():
     try:
@@ -87,6 +88,19 @@ def validate_travel_description():
     if not re.match(REGEX_TRAVEL_DESCRIPTION, travel_description):
         raise Exception("company_exception travel_description")
     return travel_description
+##############################
+REGEX_TRAVEL_TIME = f"^-?\d{10}(\d{3})?$" # Check for epoch
+def validate_travel_time_from():
+    travel_time_from = request.form.get("travel_time_from", "").strip()
+    if not re.match(REGEX_TRAVEL_TIME, travel_time_from):
+        raise Exception("company_exception travel_time_from")
+    return travel_time_from
+##############################
+def validate_travel_time_to():
+    travel_time_to = request.form.get("travel_time_to", "").strip()
+    if not re.match(REGEX_TRAVEL_TIME, travel_time_to):
+        raise Exception("company_exception travel_time_to")
+    return travel_time_to
 ################################################### CITY VALIDATION ####################################################
 CITY_NAME_MIN = 2
 CITY_NAME_MAX = 100
