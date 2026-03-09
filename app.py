@@ -116,7 +116,7 @@ def api_create_travel():
     try:
         #user = session.get("user", "")
         user = {
-            "user_pk" : "12341"
+            "user_pk" : "fc233718118a49459d1cf3403af17a31"
         }
         # Validations first
         city_name = x.validate_city_name()
@@ -128,6 +128,9 @@ def api_create_travel():
         travel_description = x.validate_travel_description()
 
         db, cursor = x.db()
+        travel_date_from = x.validate_travel_time_from() #TODO: Add real things and validations to this
+        travel_date_to = x.validate_travel_time_to()
+        ic(travel_date_from)
 
         country_q = "SELECT country_pk FROM countries WHERE country_name = %s"
         cursor.execute(country_q, (country_name,))
@@ -149,8 +152,6 @@ def api_create_travel():
         city_fk = city_row["city_pk"]
 
         travel_pk = uuid.uuid4().hex
-        travel_date_from = int(time.time()) #TODO: Add real things and validations to this
-        travel_date_to = int(time.time()) + 1
         user_updated = int(time.time())
         travel_q = """INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s);""" 
         cursor.execute(travel_q, (travel_pk, travel_title, city_fk, user["user_pk"], travel_date_from, travel_date_to, travel_description))

@@ -1,6 +1,6 @@
 {% include "_header.html" %}
 <main>
-    <form mix-post="/api-create-user" autocomplete="off">
+    <form mix-post="/api-create-travel" autocomplete="off">
         <div>
             <label for="">
                 Title <span>{{ x.TRAVEL_TITLE_MIN }} to {{ x.TRAVEL_TITLE_MAX }} characters</span>
@@ -27,15 +27,15 @@
             <label for="">
                 Country
             </label>
-            <input name="user_email" type="email" placeholder="user email" value=""
-                mix-validate="{{x.REGEX_USER_EMAIL}}">
+            <input name="country_name" type="text" placeholder="Country name" value=""
+                mix-validate="{{x.REGEX_COUNTRY_NAME}}">
         </div>
 
         <div>
             <label for="">
                 Date from:
             </label>
-            <input type="date" id="start" name="travel_time_from"  />
+            <input type="date" name="travel_time_from" id="travel_time_to" />
         </div>
 
         <div>
@@ -43,6 +43,14 @@
                 Date to:
             </label>
             <input type="date" id="start" name="travel_time_to"  />
+        </div>
+
+        <div>
+            <label for="">
+                Travel description
+            </label>
+            <input name="travel_description" type="text" placeholder="Country name" value=""
+                mix-validate="{{x.REGEX_TRAVEL_DESCRIPTION}}">
         </div>
 
 
