@@ -27,22 +27,24 @@
             <label for="">
                 Country
             </label>
-            <input name="country_name" type="text" placeholder="Country name" value=""
+            <select name="country_name" id="country_name"  placeholder="Country name" value=""
                 mix-validate="{{x.REGEX_COUNTRY_NAME}}">
+
+            </select>
         </div>
 
         <div>
             <label for="">
                 Date from:
             </label>
-            <input type="date" name="travel_time_from" id="travel_time_to" />
+            <input type="date" name="travel_date_from" id="travel_time_to" />
         </div>
 
         <div>
             <label for="">
                 Date to:
             </label>
-            <input type="date" id="start" name="travel_time_to"  />
+            <input type="date" id="start" name="travel_date_to"  />
         </div>
 
         <div>
@@ -61,6 +63,8 @@
     </form>
 
 </main>
-
-
+<script type="module">
+    import { loadCountries } from '/static/eventListeners.js'
+    loadCountries()
+</script>
 {% include "_footer.html" %}

@@ -3,7 +3,6 @@ import mysql.connector
 import re # Regular expressions also called Regex
 from functools import wraps
 from icecream import ic
-import time, calendar
 
 ##############################
 def db():
@@ -31,7 +30,13 @@ def no_cache(view):
         response.headers["Expires"] = "0"
         return response
     return no_cache_view
-
+##############################
+REGEX_UUID4 = "^[0-9a-fA-F]{12}4[0-9a-fA-F]{3}[89abAB][0-9a-fA-F]{15}$"
+def validate_uuid4():
+    uuid4 = request.view_args.get("travel_pk")
+    if not re.match(REGEX_UUID4, uuid4):
+        raise Exception("company_exception travel_pk")
+    return uuid4
 ################################################### USERS VALIDATION ####################################################
 
 ##############################
@@ -90,22 +95,18 @@ def validate_travel_description():
         raise Exception("company_exception travel_description")
     return travel_description
 ##############################
-REGEX_TRAVEL_TIME = "^-?\d{10}(\d{3})?$" # Check for epoch
-def validate_travel_time_from():
-    time_string = request.form.get("travel_time_from", "").strip()
-    epoch = str(calendar.timegm(time.strptime(time_string, "%Y-%m-%d")))
-    ic(epoch)
-    if not re.match(REGEX_TRAVEL_TIME, epoch):
-        raise Exception("company_exception travel_time_from")
-    return int(epoch)
+REGEX_TRAVEL_DATE = "^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$" # Check for date-string
+def validate_travel_date_from():
+    date_string = request.form.get("travel_date_from", "").strip()
+    if not re.match(REGEX_TRAVEL_DATE, date_string):
+        raise Exception("company_exception travel_date_from")
+    return date_string
 ##############################
-def validate_travel_time_to():
-    time_string = request.form.get("travel_time_to", "").strip()
-    epoch = str(calendar.timegm(time.strptime(time_string, "%Y-%m-%d")))
-    ic(epoch)
-    if not re.match(REGEX_TRAVEL_TIME, epoch):
-        raise Exception("company_exception travel_time_to")
-    return int(epoch)
+def validate_travel_date_to():
+    date_string = request.form.get("travel_date_to", "").strip()
+    if not re.match(REGEX_TRAVEL_DATE, date_string):
+        raise Exception("company_exception travel_date_to")
+    return date_string
 ################################################### CITY VALIDATION ####################################################
 CITY_NAME_MIN = 2
 CITY_NAME_MAX = 100
@@ -125,7 +126,7 @@ def validate_city_region():
         raise Exception("company_exception city_region")
     return city_region
 
-COUNTRY_NAME_MIN = 2
+COUNTRY_NAME_MIN = 1 # Set to 1 so we can use the same regex for searching
 COUNTRY_NAME_MAX = 100
 REGEX_COUNTRY_NAME = f"^.{{{COUNTRY_NAME_MIN},{COUNTRY_NAME_MAX}}}$"
 def validate_country_name():

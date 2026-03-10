@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, jsonify
 import x
 import uuid
-import time
+import time, calendar
 from icecream import ic
 from flask_session import Session
 from werkzeug.security import generate_password_hash
@@ -111,26 +111,84 @@ def api_create_user():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 ##############################
+@app.get("/api-get-countries")
+def get_countries():
+    try:
+        db, cursor = x.db()
+        q = "SELECT country_name FROM countries"
+        cursor.execute(q)
+        countries = cursor.fetchall()
+        return jsonify(countries)
+    except Exception as ex:
+        ic(ex)
+        return "ups"
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+@app.get("/api-get-travel/<travel_pk>")
+def get_travel_by_travel_pk(travel_pk):
+    try:
+        travel_pk = x.validate_uuid4()
+        db, cursor = x.db()
+        q = """
+        SELECT *
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        WHERE travel_pk = %s;  
+        """
+        cursor.execute(q, (travel_pk,))
+        travel = cursor.fetchone()
+        return jsonify(travel)
+    except Exception as ex:
+        ic(ex)
+        return "ups"
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+##############################
+@app.get("/api-get-travels")
+def get_travels():
+    try:
+        db, cursor = x.db()
+        q = "SELECT * FROM travels"
+        cursor.execute(q)
+        travels = cursor.fetchall()
+        return jsonify(travels)
+
+    except Exception as ex:
+        ic(ex)
+        return "ups"
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+####################################
 @app.post("/api-create-travel")
 def api_create_travel():
     try:
-        #user = session.get("user", "")
-        user = {
-            "user_pk" : "fc233718118a49459d1cf3403af17a31"
-        }
+        user = session.get("user", "")
         # Validations first
         city_name = x.validate_city_name()
         city_region = x.validate_city_region()
-        
+        ic(user)
         country_name = x.validate_country_name()
 
         travel_title = x.validate_travel_title()
         travel_description = x.validate_travel_description()
 
         db, cursor = x.db()
-        travel_date_from = x.validate_travel_time_from() #TODO: Add real things and validations to this
-        travel_date_to = x.validate_travel_time_to()
-        ic(travel_date_from)
+
+        travel_date_from = x.validate_travel_date_from() 
+        travel_date_to   = x.validate_travel_date_to()
+
+        # Change to epoch format
+        travel_date_from = calendar.timegm(time.strptime(travel_date_from, "%Y-%m-%d"))
+        travel_date_to = calendar.timegm(time.strptime(travel_date_to, "%Y-%m-%d"))
+
+        # TODO: Add validation to check that the travel_date_to is NOT before travel
+        # _date_from
+
 
         country_q = "SELECT country_pk FROM countries WHERE country_name = %s"
         cursor.execute(country_q, (country_name,))
@@ -161,7 +219,9 @@ def api_create_travel():
         db.commit()  
         # There's gotta be an easier way to make the queries lol
         return f"""
+                <browser mix-update="#tooltip">
                 ok
+                </browser>
                 """ # TODO: Make it redirect to created travel post 
     except Exception as ex:
         ic(ex)

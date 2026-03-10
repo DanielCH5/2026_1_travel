@@ -1,6 +1,10 @@
 {% include "_header.html" %}
 
 
-index
+{% include "__travel_grid.html" %}
 
+<script type="module">
+    import { loadTravels } from '/static/eventListeners.js'
+    loadTravels()
+</script>
 {% include "_footer.html" %}
