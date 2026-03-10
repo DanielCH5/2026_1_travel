@@ -1,4 +1,4 @@
-import { getCountries, getTravels, getTravelsByUser } from "./api-functions.js";
+import { getCountries, getTravels, getTravelsByUser, deleteTravelByTravelPk } from "./api-functions.js";
 import { createCard } from "./domFunctions.js";
 export async function loadCountries() {
     window.addEventListener("load", async () => {
@@ -28,5 +28,18 @@ export async function loadTravelsByUser() {
         const travelGrid = document.getElementById("travelGrid")
         const travels = await getTravelsByUser();
         travels.map(travel => createCard(travel, travelGrid))
+    })
+}
+export function deleteTravel() {
+    const deleteBtn = document.getElementById("deleteBtn");
+    
+    deleteBtn.addEventListener("click", async ()=> {
+        const travelPk = deleteBtn.dataset.travelpk;
+        const response = await deleteTravelByTravelPk(travelPk)
+        
+        if(response.ok) {
+            window.location.href = "/"
+        }
+        
     })
 }

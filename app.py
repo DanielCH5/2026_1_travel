@@ -72,11 +72,16 @@ def show_travel_by_travel_pk(travel_pk):
         ORDER BY travels.travel_created_at DESC;"""
         cursor.execute(q, (travel_pk,))
         travel = cursor.fetchone()
+        if not travel:
+            return "Travel not found", 404
         user = session.get("user", "")
         return render_template("page_travel.html", user=user, x=x, travel=travel)
     except Exception as ex:
         ic(ex)
         return "ups", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
     
 ##############################
 @app.post("/api-create-user")
@@ -297,6 +302,33 @@ def api_create_travel():
 
         return "Service under maintenance", 500
         
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+##############################
+@app.delete("/api-delete-travel/<travel_pk>")
+@x.no_cache
+def api_delete_travel(travel_pk):
+    try:
+        travel_pk = x.validate_uuid4()
+        user = session.get("user", "")
+        db, cursor = x.db()
+
+        q = "SELECT * FROM travels WHERE travel_pk = %s"
+        cursor.execute(q, (travel_pk,))
+        travel = cursor.fetchone()
+        ic(travel)
+        if user["user_pk"] != travel["user_fk"]:
+            raise Exception("User not allowed to delete")
+
+        delete_q = "DELETE FROM travels WHERE travel_pk = %s"
+        cursor.execute(delete_q, (travel_pk,))
+        db.commit()
+        
+        return "",204
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()

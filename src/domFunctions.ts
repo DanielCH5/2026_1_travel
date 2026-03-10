@@ -1,4 +1,4 @@
-export async function createCard(travel, travelGrid) {
+export function createCard(travel, travelGrid) {
     const cardLink = document.createElement("a");
     cardLink.href = `/travel/${travel.travel_pk}`;
     const card = document.createElement("article");
@@ -16,4 +16,5 @@ export async function createCard(travel, travelGrid) {
     cardLink.appendChild(card)
     travelGrid.appendChild(cardLink);
 }
+
 
