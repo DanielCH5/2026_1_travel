@@ -1,0 +1,15 @@
+{% include "_header.html" %}
+
+{% if user.user_pk == travel.user_fk %}
+<p> ok</p>
+{% else %}
+<h1>
+    {{ travel.travel_title }}
+</h1>
+<p id="travelDescription">
+    {{ travel.travel_description }}
+</p>
+{% endif %}
+
+
+{% include "_footer.html" %}

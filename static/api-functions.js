@@ -18,15 +18,29 @@ export async function getTravels() {
             method: "GET",
         });
         const data = await response.json();
+        console.log(data);
         return data;
     }
     catch (error) {
         console.log("ups");
     }
 }
-export async function GetTravelByTravelPk(travel_pk) {
+export async function getTravelByTravelPk(travel_pk) {
     try {
         const route = `/api-get-travel/${travel_pk}`;
+        const response = await fetch(route, {
+            method: "GET",
+        });
+        const travelInfo = await response.json();
+        return travelInfo;
+    }
+    catch (error) {
+        console.log("ups");
+    }
+}
+export async function getTravelsByUser() {
+    try {
+        const route = `/api-get-travels-by-user`;
         const response = await fetch(route, {
             method: "GET",
         });

@@ -54,6 +54,29 @@ def show_create_travel():
     except Exception as ex:
         ic(ex)
         return "ups", 500
+##############################
+@app.get("/travel/<travel_pk>")
+@x.no_cache
+def show_travel_by_travel_pk(travel_pk):
+    try:
+        travel_pk = x.validate_uuid4()
+        
+        db, cursor = x.db()
+
+        q = """SELECT *
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        WHERE travel_pk = %s
+        ORDER BY travels.travel_created_at DESC;"""
+        cursor.execute(q, (travel_pk,))
+        travel = cursor.fetchone()
+        user = session.get("user", "")
+        return render_template("page_travel.html", user=user, x=x, travel=travel)
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
     
 ##############################
 @app.post("/api-create-user")
@@ -125,6 +148,7 @@ def get_countries():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+##############################
 @app.get("/api-get-travel/<travel_pk>")
 def get_travel_by_travel_pk(travel_pk):
     try:
@@ -136,14 +160,39 @@ def get_travel_by_travel_pk(travel_pk):
         INNER JOIN cities ON travels.city_fk = cities.city_pk
         INNER JOIN countries ON cities.country_fk = countries.country_pk
         INNER JOIN users ON travels.user_fk = users.user_pk
-        WHERE travel_pk = %s;  
+        WHERE travel_pk = %s
+        ORDER BY travels.travel_created_at DESC;  
         """
         cursor.execute(q, (travel_pk,))
         travel = cursor.fetchone()
         return jsonify(travel)
     except Exception as ex:
         ic(ex)
-        return "ups"
+        return "ups", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+#########################################
+@app.get("/api-get-travels-by-user")
+def get_travels_by_user():
+    try:
+        user = session.get("user", "")
+        db, cursor = x.db()
+        q = """
+        SELECT *
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        WHERE users.user_pk = %s
+        ORDER BY travels.travel_created_at DESC;  
+        """
+        cursor.execute(q, (user["user_pk"],))
+        travels = cursor.fetchall()
+        return jsonify(travels)
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
@@ -152,7 +201,12 @@ def get_travel_by_travel_pk(travel_pk):
 def get_travels():
     try:
         db, cursor = x.db()
-        q = "SELECT * FROM travels"
+        q = """SELECT *
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        ORDER BY travels.travel_created_at DESC;"""
         cursor.execute(q)
         travels = cursor.fetchall()
         return jsonify(travels)
@@ -176,11 +230,11 @@ def api_create_travel():
 
         travel_title = x.validate_travel_title()
         travel_description = x.validate_travel_description()
-
         db, cursor = x.db()
 
         travel_date_from = x.validate_travel_date_from() 
         travel_date_to   = x.validate_travel_date_to()
+        travel_created_at   = int(time.time())
 
         # Change to epoch format
         travel_date_from = calendar.timegm(time.strptime(travel_date_from, "%Y-%m-%d"))
@@ -211,18 +265,15 @@ def api_create_travel():
 
         travel_pk = uuid.uuid4().hex
         user_updated = int(time.time())
-        travel_q = """INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s);""" 
-        cursor.execute(travel_q, (travel_pk, travel_title, city_fk, user["user_pk"], travel_date_from, travel_date_to, travel_description))
+        travel_q = """INSERT INTO travels VALUES(%s, %s, %s, %s, %s, %s, %s, %s);""" 
+        cursor.execute(travel_q, (travel_pk, travel_title, city_fk, user["user_pk"], travel_date_from, travel_date_to, travel_description, travel_created_at))
         db.commit()
         user_q = "UPDATE users SET user_updated_at = %s WHERE user_pk = %s"
         cursor.execute(user_q, (user_updated, user["user_pk"]))
         db.commit()  
         # There's gotta be an easier way to make the queries lol
-        return f"""
-                <browser mix-update="#tooltip">
-                ok
-                </browser>
-                """ # TODO: Make it redirect to created travel post 
+        return f"""<browser mix-replace="form"></browser>
+                <browser mix-redirect="/travel/{travel_pk}"></browser>""" # TODO: Make it redirect to created travel post 
     except Exception as ex:
         ic(ex)
         if "Duplicate entry" in str(ex) and "user_email" in str(ex):
