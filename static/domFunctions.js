@@ -7,7 +7,7 @@ export function createCard(travel, travelGrid) {
     const cardUser = document.createElement("p");
     cardTitle.textContent = travel.travel_title;
     cardDestination.textContent = `${travel.city_name}, ${travel.city_region}, ${travel.country_name}`;
-    cardUser.textContent = travel.user_first_name;
+    cardUser.textContent = `User: ${travel.user_first_name} ${travel.user_last_name}`;
     card.appendChild(cardTitle);
     card.appendChild(cardDestination);
     card.appendChild(cardUser);

@@ -63,7 +63,8 @@ def show_travel_by_travel_pk(travel_pk):
         
         db, cursor = x.db()
 
-        q = """SELECT *
+        q = """SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
         FROM travels
         INNER JOIN cities ON travels.city_fk = cities.city_pk
         INNER JOIN countries ON cities.country_fk = countries.country_pk
@@ -160,7 +161,8 @@ def get_travel_by_travel_pk(travel_pk):
         travel_pk = x.validate_uuid4()
         db, cursor = x.db()
         q = """
-        SELECT *
+        SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
         FROM travels
         INNER JOIN cities ON travels.city_fk = cities.city_pk
         INNER JOIN countries ON cities.country_fk = countries.country_pk
@@ -184,7 +186,8 @@ def get_travels_by_user():
         user = session.get("user", "")
         db, cursor = x.db()
         q = """
-        SELECT *
+        SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
         FROM travels
         INNER JOIN cities ON travels.city_fk = cities.city_pk
         INNER JOIN countries ON cities.country_fk = countries.country_pk
@@ -206,7 +209,8 @@ def get_travels_by_user():
 def get_travels():
     try:
         db, cursor = x.db()
-        q = """SELECT *
+        q = """SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
         FROM travels
         INNER JOIN cities ON travels.city_fk = cities.city_pk
         INNER JOIN countries ON cities.country_fk = countries.country_pk

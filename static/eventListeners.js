@@ -29,12 +29,29 @@ export async function loadTravelsByUser() {
 }
 export function deleteTravel() {
     const deleteBtn = document.getElementById("deleteBtn");
-    deleteBtn.addEventListener("click", async () => {
-        const travelPk = deleteBtn.dataset.travelpk;
-        const response = await deleteTravelByTravelPk(travelPk);
-        if (response.ok) {
-            window.location.href = "/";
-        }
+    deleteBtn.addEventListener("click", () => {
+        const dialog = document.createElement("dialog");
+        const p = document.createElement("p");
+        p.textContent = "Are you SURE you want to DELETE this travel?";
+        const cancelBtn = document.createElement("button");
+        const yesBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        yesBtn.textContent = "Yes, Delete this";
+        cancelBtn.addEventListener("click", () => {
+            dialog.close();
+        });
+        yesBtn.addEventListener("click", async () => {
+            const travelPk = deleteBtn.dataset.travelpk;
+            const response = await deleteTravelByTravelPk(travelPk);
+            if (response.ok) {
+                window.location.href = "/";
+            }
+        });
+        dialog.appendChild(p);
+        dialog.appendChild(cancelBtn);
+        dialog.appendChild(yesBtn);
+        document.body.append(dialog);
+        dialog.showModal();
     });
 }
 //# sourceMappingURL=eventListeners.js.map
