@@ -2,7 +2,7 @@
 
 {% if user.user_pk == travel.user_fk %}
 <p> ok</p>
-<button method="DELETE" action="/api-delete-travel/{{travel.travel_pk}}" data-travelpk="{{travel.travel_pk}}" id="deleteBtn">Delete</button>
+<button method="DELETE" action="/api-delete-travel/{{travel.travel_pk}}" class="deleteBtn" id="{{travel.travel_pk}}">Delete</button>
 {% endif %}
 <h1>
     {{ travel.travel_title }}
@@ -10,9 +10,10 @@
 <p id="travelDescription">
     {{ travel.travel_description }}
 </p>
-
+{% if user.user_pk == travel.user_fk %}
 <script type="module">
     import { deleteTravel } from '/static/eventListeners.js'
     deleteTravel()
 </script>
+{% endif %}
 {% include "_footer.html" %}

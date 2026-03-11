@@ -155,6 +155,15 @@ def get_countries():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 ##############################
+@app.get("/api-get-current-user")
+def api_get_current_user():
+    try:
+        user = session.get("user", "")
+        return jsonify(user)
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
+##############################
 @app.get("/api-get-travel/<travel_pk>")
 def get_travel_by_travel_pk(travel_pk):
     try:
@@ -358,6 +367,7 @@ def api_login():
             return jsonify({"error_message": error_message}), 400            
 
         user.pop("user_password")
+        user.pop("user_email")
         session["user"] = user
         
         return jsonify({"error_message": "Logging in..."})

@@ -1,5 +1,5 @@
-import { getCountries, getTravels, getTravelsByUser, deleteTravelByTravelPk } from "./api-functions.js";
-import { createCard } from "./domFunctions.js";
+import { getCountries, getTravels, getTravelsByUser } from "./api-functions.js";
+import { createCard, createDialogModal } from "./domFunctions.js";
 export async function loadCountries() {
     window.addEventListener("load", async () => {
         const countrySelect = document.getElementById("country_name");
@@ -15,43 +15,34 @@ export async function loadCountries() {
 export async function loadTravels() {
     window.addEventListener("load", async () => {
         const travelGrid = document.getElementById("travelGrid");
+        const response = await fetch("/api-get-current-user", {
+            method: "GET"
+        });
+        const currentUser = await response.json();
+        console.log(currentUser);
         const travels = await getTravels();
         console.log(travels);
-        travels.map(travel => createCard(travel, travelGrid));
+        travels.map(travel => createCard(travel, travelGrid, currentUser));
     });
 }
 export async function loadTravelsByUser() {
     window.addEventListener("load", async () => {
         const travelGrid = document.getElementById("travelGrid");
         const travels = await getTravelsByUser();
-        travels.map(travel => createCard(travel, travelGrid));
+        const response = await fetch("/api-get-current-user", {
+            method: "GET"
+        });
+        const currentUser = await response.json();
+        travels.map(travel => createCard(travel, travelGrid, currentUser));
     });
 }
 export function deleteTravel() {
-    const deleteBtn = document.getElementById("deleteBtn");
-    deleteBtn.addEventListener("click", () => {
-        const dialog = document.createElement("dialog");
-        const p = document.createElement("p");
-        p.textContent = "Are you SURE you want to DELETE this travel?";
-        const cancelBtn = document.createElement("button");
-        const yesBtn = document.createElement("button");
-        cancelBtn.textContent = "Cancel";
-        yesBtn.textContent = "Yes, Delete this";
-        cancelBtn.addEventListener("click", () => {
-            dialog.close();
+    const deleteBtns = document.querySelectorAll(".deleteBtn");
+    console.log(deleteBtns);
+    deleteBtns.forEach((deleteBtn) => {
+        deleteBtn.addEventListener("click", () => {
+            createDialogModal(deleteBtn);
         });
-        yesBtn.addEventListener("click", async () => {
-            const travelPk = deleteBtn.dataset.travelpk;
-            const response = await deleteTravelByTravelPk(travelPk);
-            if (response.ok) {
-                window.location.href = "/";
-            }
-        });
-        dialog.appendChild(p);
-        dialog.appendChild(cancelBtn);
-        dialog.appendChild(yesBtn);
-        document.body.append(dialog);
-        dialog.showModal();
     });
 }
 //# sourceMappingURL=eventListeners.js.map

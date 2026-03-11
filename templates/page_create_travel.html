@@ -27,7 +27,7 @@
             <label for="">
                 Country
             </label>
-            <select name="country_name" id="country_name"  placeholder="Country name" value=""
+            <select name="country_name" id="country_name" placeholder="Country name" value=""
                 mix-validate="{{x.REGEX_COUNTRY_NAME}}">
 
             </select>
@@ -37,14 +37,14 @@
             <label for="">
                 Date from:
             </label>
-            <input type="date" name="travel_date_from" id="travel_time_to" />
+            <input type="date" name="travel_date_from" id="travel_time_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" />
         </div>
 
         <div>
             <label for="">
                 Date to:
             </label>
-            <input type="date" id="start" name="travel_date_to"  />
+            <input type="date" id="start" name="travel_date_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" />
         </div>
 
         <div>
