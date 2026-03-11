@@ -18,7 +18,6 @@ export async function getTravels() {
             method: "GET",
         });
         const data = await response.json();
-        console.log(data);
         return data;
     }
     catch (error) {

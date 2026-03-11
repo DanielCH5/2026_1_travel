@@ -19,9 +19,7 @@ export async function loadTravels() {
             method: "GET"
         });
         const currentUser = await response.json();
-        console.log(currentUser);
         const travels = await getTravels();
-        console.log(travels);
         travels.map(travel => createCard(travel, travelGrid, currentUser));
     });
 }

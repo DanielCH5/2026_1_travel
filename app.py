@@ -109,6 +109,7 @@ def api_create_user():
         cursor.execute(q2, (user_pk,))
         user = cursor.fetchone()
         user.pop("user_password")
+        user.pop("user_email")
         session["user"] = user
         return f"""
                 <browser mix-redirect="/"></browser>
