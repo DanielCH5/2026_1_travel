@@ -373,6 +373,13 @@ def api_update_travel(travel_pk):
         `travel_date_from` = %s, `travel_date_to` = %s, `travel_description` = %s, 
         `travel_created_at` = %s WHERE `travel_pk` = %s;"""
         cursor.execute(travel_q, (travel_title, city_fk, travel_date_from, travel_date_to, travel_description, travel_created_at, travel_pk))
+        db.commit()
+        user_q = "UPDATE users SET user_updated_at = %s WHERE user_pk = %s"
+        cursor.execute(user_q, (user_updated, user["user_pk"]))
+        db.commit()
+
+        return f"""<browser mix-replace="form"></browser>
+                <browser mix-redirect="/travel/{travel_pk}"></browser>"""
     except Exception as ex:
         ic(ex)
         return "ups", 500
