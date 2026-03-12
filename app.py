@@ -337,10 +337,18 @@ def api_get_travel_form(travel_pk):
         """
         cursor.execute(q, (travel_pk,))
         travel = cursor.fetchone()
-        travel_form = render_template("__form_travel.html", user=user, x=x, travel=travel)
+        travel["travel_date_from"] = time.strftime("%Y-%m-%d",
+            time.localtime(travel["travel_date_from"]))
+        travel["travel_date_to"] = time.strftime("%Y-%m-%d",
+            time.localtime(travel["travel_date_to"]))
+
+        country_q = "SELECT country_name FROM countries"
+        cursor.execute(country_q)
+        countries = cursor.fetchall()
+        travel_form = render_template("__form_travel.html", user=user, x=x, travel=travel, countries=countries)
         
         return f"""
-        <browser mix-replace="#travelDetails">
+        <browser mix-update="#travelDetails">
         {travel_form}
         </browser>"""
         
@@ -405,7 +413,7 @@ def api_update_travel(travel_pk):
         travel_update_q = """UPDATE `travels` SET `travel_title` = %s, `city_fk` = %s, 
         `travel_date_from` = %s, `travel_date_to` = %s, `travel_description` = %s, 
         `travel_created_at` = %s WHERE `travel_pk` = %s;"""
-        cursor.execute(travel_q, (travel_title, city_fk, travel_date_from, travel_date_to, travel_description, travel_created_at, travel_pk))
+        cursor.execute(travel_update_q, (travel_title, city_fk, travel_date_from, travel_date_to, travel_description, travel_created_at, travel_pk))
         db.commit()
         user_q = "UPDATE users SET user_updated_at = %s WHERE user_pk = %s"
         cursor.execute(user_q, (user_updated, user["user_pk"]))
@@ -420,10 +428,7 @@ def api_update_travel(travel_pk):
         ORDER BY travels.travel_created_at DESC; """
         cursor.execute(travel_updated_q, (travel_pk,))
         travel_updated = cursor.fetchone()
-        updated_travel_details = render_template("__travel_details.html", user=user, travel=travel_updated, x=x)
-        return f"""<browser mix-replace="#travel_update_form">
-        {updated_travel_details}
-        </browser>"""
+        return f"""<browser mix-redirect="/travel/{travel_pk}"></browser>"""
     except Exception as ex:
         ic(ex)
         return "ups", 500

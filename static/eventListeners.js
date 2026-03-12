@@ -37,17 +37,18 @@ export async function loadTravelsByUser() {
 }
 export function deleteTravel() {
     const deleteBtns = document.querySelectorAll(".deleteBtn");
-    console.log(deleteBtns);
     deleteBtns.forEach((deleteBtn) => {
         deleteBtn.addEventListener("click", () => {
             createDialogModal(deleteBtn);
         });
     });
 }
-export async function getCountriesOnLoad() {
-    const travelForm = document.getElementById("travel_update_form");
-    travelForm.addEventListener("load", () => {
-        loadCountries();
+export function convertTime() {
+    const timeDates = document.querySelectorAll(".timeDate");
+    timeDates.forEach((timeDate) => {
+        const epoch = parseInt(timeDate.textContent);
+        const date = new Date(epoch * 1000).toDateString();
+        timeDate.textContent = date;
     });
 }
 //# sourceMappingURL=eventListeners.js.map

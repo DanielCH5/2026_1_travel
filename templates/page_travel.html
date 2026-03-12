@@ -2,16 +2,17 @@
 
 {% if user.user_pk == travel.user_fk %}
 <button method="DELETE" action="/api-delete-travel/{{travel.travel_pk}}" class="deleteBtn" id="{{travel.travel_pk}}">Delete</button>
-<button mix-get="/api-get-travel-form/{{travel.travel_pk}}">Edit travel</button>
+<button mix-get="/api-get-travel-form/{{travel.travel_pk}}" id="editBtn">Edit travel</button>
 {% endif %}
 
-<main id="travelDetails">
+<main id="travelContainer">
 {% include "__travel_details.html" %}
 </main>
 {% if user.user_pk == travel.user_fk %}
-<script type="module">
-    import { deleteTravel, loadCountries } from '/static/eventListeners.js'
-    deleteTravel()
-</script>
 {% endif %}
+<script type="module">
+    import { deleteTravel, convertTime } from '/static/eventListeners.js';
+    deleteTravel();
+    convertTime();
+</script>
 {% include "_footer.html" %}

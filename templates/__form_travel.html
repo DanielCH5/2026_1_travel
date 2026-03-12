@@ -1,4 +1,4 @@
-    <form mix-patch="/api-update-travel/{{travel.travel_pk}}" autocomplete="off" id="travel_update_form" >
+    <form mix-patch="/api-update-travel/{{travel.travel_pk}}" autocomplete="off" id="travel_update_form">
         <div>
             <label for="">
                 Title <span>{{ x.TRAVEL_TITLE_MIN }} to {{ x.TRAVEL_TITLE_MAX }} characters</span>
@@ -28,6 +28,9 @@
             <select name="country_name" id="country_name" placeholder="Country name"
                 mix-validate="{{x.REGEX_COUNTRY_NAME}}">
             <option value="{{travel.country_name}}">{{travel.country_name}}</option>
+            {% for country in countries %}
+            <option value="{{country.country_name}}">{{country.country_name}}</option>
+            {% endfor %}
             </select>
         </div>
 
@@ -61,7 +64,3 @@
     </form>
 
 </main>
-<script type="module">
-    import { loadCountries } from '/static/eventListeners.js'
-    loadCountries()
-</script>

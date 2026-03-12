@@ -1,10 +1,12 @@
-<h1>
-    {{ travel.travel_title }}
-</h1>
-<h2>{{ travel.city_name }}, {{ travel.city_region }}, {{ travel.country_name }}</h2>
-<h3><span class="timeDate">{{ travel.travel_date_from }}</span> - <span class="timeDate">{{ travel.travel_date_to }}</span></h3>
-<h4>User: {{ travel.user_first_name }} {{ travel.user_last_name }}</h4>
-<h5>Posted: <span class="timeDate">{{ travel.travel_created_at }}</span></h5>
-<p id="travelDescription">
-    {{ travel.travel_description }}
-</p>
+<div id="travelDetails">
+    <h1>
+        {{ travel.travel_title }}
+    </h1>
+    <h2>{{ travel.city_name }}, {{ travel.city_region }}, {{ travel.country_name }}</h2>
+    <h3><span class="timeDate">{{ travel.travel_date_from }}</span> - <span class="timeDate">{{ travel.travel_date_to }}</span></h3>
+    <h4>User: {{ travel.user_first_name }} {{ travel.user_last_name }}</h4>
+    <h5>Posted: <span class="timeDate">{{ travel.travel_created_at }}</span></h5>
+    <p id="travelDescription">
+        {{ travel.travel_description }}
+    </p>
+</div>
