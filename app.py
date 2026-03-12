@@ -244,15 +244,14 @@ def api_create_travel():
         # Validations first
         city_name = x.validate_city_name()
         city_region = x.validate_city_region()
-        ic(user)
         country_name = x.validate_country_name()
 
+        travel_date_from = x.validate_travel_date_from() 
+        travel_date_to   = x.validate_travel_date_to()
         travel_title = x.validate_travel_title()
         travel_description = x.validate_travel_description()
         db, cursor = x.db()
 
-        travel_date_from = x.validate_travel_date_from() 
-        travel_date_to   = x.validate_travel_date_to()
         travel_created_at   = int(time.time())
 
         # Change to epoch format
@@ -320,6 +319,67 @@ def api_create_travel():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 ##############################
+@app.patch("/api-update-travel/<travel_pk>")
+def api_update_travel(travel_pk):
+    try:
+        travel_pk = x.validate_uuid4()
+        db, cursor = x.db()
+        user = session.get("user", "")
+        travel_q = "SELECT * FROM travels WHERE travel_pk = %s"
+        cursor.execute(travel_q, (travel_pk,))
+        travel = cursor.fetchone()
+        if user["user_pk"] != travel["user_fk"]:
+            raise Exception("User not allowed to update")
+            return "User not allowed to update", 400
+        
+        city_name = x.validate_city_name()
+        city_region = x.validate_city_region()
+        country_name = x.validate_country_name()
+
+        travel_date_from = x.validate_travel_date_from() 
+        travel_date_to   = x.validate_travel_date_to()
+        travel_title = x.validate_travel_title()
+        travel_description = x.validate_travel_description()
+
+        # Should've probably made an travel_updated_at, but lets just
+        # pretend that's travel_created_at for now
+        travel_created_at = int(time.time())
+
+        # Change to epoch format
+        travel_date_from = calendar.timegm(time.strptime(travel_date_from, "%Y-%m-%d"))
+        travel_date_to = calendar.timegm(time.strptime(travel_date_to, "%Y-%m-%d"))
+
+        country_q = "SELECT country_pk FROM countries WHERE country_name = %s"
+        cursor.execute(country_q, (country_name,))
+        country_row = cursor.fetchone()
+
+        country_fk = country_row["country_pk"]
+
+        city_fk_q = "SELECT city_pk FROM cities WHERE city_name = %s AND city_region = %s"
+        cursor.execute(city_fk_q, (city_name, city_region))
+        city_row = cursor.fetchone()
+
+        if not city_row:
+            city_q = "INSERT INTO cities VALUES(NULL, %s, %s, %s)"
+            cursor.execute(city_q, (country_fk, city_name, city_region))
+            db.commit()
+            cursor.execute(city_fk_q, (city_name, city_region))
+            city_row = cursor.fetchone()
+        
+        city_fk = city_row["city_pk"]
+        user_updated = int(time.time())
+
+        travel_update_q = """UPDATE `travels` SET `travel_title` = %s, `city_fk` = %s, 
+        `travel_date_from` = %s, `travel_date_to` = %s, `travel_description` = %s, 
+        `travel_created_at` = %s WHERE `travel_pk` = %s;"""
+        cursor.execute(travel_q, (travel_title, city_fk, travel_date_from, travel_date_to, travel_description, travel_created_at, travel_pk))
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+##############################
 @app.delete("/api-delete-travel/<travel_pk>")
 @x.no_cache
 def api_delete_travel(travel_pk):
@@ -331,7 +391,6 @@ def api_delete_travel(travel_pk):
         q = "SELECT * FROM travels WHERE travel_pk = %s"
         cursor.execute(q, (travel_pk,))
         travel = cursor.fetchone()
-        ic(travel)
         if user["user_pk"] != travel["user_fk"]:
             raise Exception("User not allowed to delete")
 
