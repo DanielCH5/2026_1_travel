@@ -1,9 +1,9 @@
-    <form mix-post="/api-create-travel" autocomplete="off">
+    <form mix-patch="/api-update-travel/{{travel.travel_pk}}" autocomplete="off" id="travel_update_form" >
         <div>
             <label for="">
                 Title <span>{{ x.TRAVEL_TITLE_MIN }} to {{ x.TRAVEL_TITLE_MAX }} characters</span>
             </label>
-            <input name="travel_title" type="text" placeholder="Title for your travel destination" value=""
+            <input name="travel_title" type="text" placeholder="Title for your travel destination" value="{{travel.travel_title}}"
                 mix-validate="{{x.REGEX_TRAVEL_TITLE}}">
         </div>
 
@@ -11,23 +11,23 @@
             <label for="">
                 City name <span>{{ x.CITY_NAME_MIN }} to {{ x.CITY_NAME_MAX }} characters</span>
             </label>
-            <input name="city_name" type="text" placeholder="City name" value="" mix-validate="{{x.REGEX_CITY_NAME}}">
+            <input name="city_name" type="text" placeholder="City name" value="{{travel.city_name}}" mix-validate="{{x.REGEX_CITY_NAME}}">
         </div>
 
         <div>
             <label for="">
                 Region <span>{{ x.CITY_REGION_MIN }} to {{ x.CITY_REGION_MAX }} characters</span>
             </label>
-            <input name="city_region" type="text" placeholder="Region" value="" mix-validate="{{x.REGEX_CITY_REGION}}">
+            <input name="city_region" type="text" placeholder="Region" value="{{travel.city_region}}" mix-validate="{{x.REGEX_CITY_REGION}}">
         </div>
 
         <div>
             <label for="">
                 Country
             </label>
-            <select name="country_name" id="country_name" placeholder="Country name" value=""
+            <select name="country_name" id="country_name" placeholder="Country name"
                 mix-validate="{{x.REGEX_COUNTRY_NAME}}">
-
+            <option value="{{travel.country_name}}">{{travel.country_name}}</option>
             </select>
         </div>
 
@@ -35,28 +35,28 @@
             <label for="">
                 Date from:
             </label>
-            <input type="date" name="travel_date_from" id="travel_time_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" />
+            <input type="date" name="travel_date_from" id="travel_time_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" value="{{travel.travel_date_from}}"/>
         </div>
 
         <div>
             <label for="">
                 Date to:
             </label>
-            <input type="date" id="start" name="travel_date_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" />
+            <input type="date" id="start" name="travel_date_to" mix-validate="{{x.REGEX_TRAVEL_DATE}}" value="{{travel.travel_date_to}}" />
         </div>
 
         <div>
             <label for="">
                 Travel description
             </label>
-            <input name="travel_description" type="text" placeholder="Country name" value=""
+            <input name="travel_description" type="text" placeholder="Travel description" value="{{travel.travel_description}}"
                 mix-validate="{{x.REGEX_TRAVEL_DESCRIPTION}}">
         </div>
 
 
 
         <button>
-            Create travel
+            Update travel
         </button>
     </form>
 

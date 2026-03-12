@@ -319,6 +319,39 @@ def api_create_travel():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 ##############################
+@app.get("/api-get-travel-form/<travel_pk>")
+def api_get_travel_form(travel_pk):
+    try:
+        travel_pk = x.validate_uuid4()
+        user = session.get("user", "")
+        db, cursor = x.db()
+        q = """
+        SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        WHERE travel_pk = %s
+        ORDER BY travels.travel_created_at DESC;  
+        """
+        cursor.execute(q, (travel_pk,))
+        travel = cursor.fetchone()
+        travel_form = render_template("__form_travel.html", user=user, x=x, travel=travel)
+        
+        return f"""
+        <browser mix-replace="#travelDetails">
+        {travel_form}
+        </browser>"""
+        
+    except Exception as ex:
+        ic(ex)
+        return "ups", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
 @app.patch("/api-update-travel/<travel_pk>")
 def api_update_travel(travel_pk):
     try:
@@ -377,9 +410,20 @@ def api_update_travel(travel_pk):
         user_q = "UPDATE users SET user_updated_at = %s WHERE user_pk = %s"
         cursor.execute(user_q, (user_updated, user["user_pk"]))
         db.commit()
-
-        return f"""<browser mix-replace="form"></browser>
-                <browser mix-redirect="/travel/{travel_pk}"></browser>"""
+        travel_updated_q = """SELECT travels.*, cities.*, countries.*, 
+        users.user_first_name, users.user_last_name
+        FROM travels
+        INNER JOIN cities ON travels.city_fk = cities.city_pk
+        INNER JOIN countries ON cities.country_fk = countries.country_pk
+        INNER JOIN users ON travels.user_fk = users.user_pk
+        WHERE travel_pk = %s
+        ORDER BY travels.travel_created_at DESC; """
+        cursor.execute(travel_updated_q, (travel_pk,))
+        travel_updated = cursor.fetchone()
+        updated_travel_details = render_template("__travel_details.html", user=user, travel=travel_updated, x=x)
+        return f"""<browser mix-replace="#travel_update_form">
+        {updated_travel_details}
+        </browser>"""
     except Exception as ex:
         ic(ex)
         return "ups", 500

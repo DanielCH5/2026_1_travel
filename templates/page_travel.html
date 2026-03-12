@@ -2,6 +2,7 @@
 
 {% if user.user_pk == travel.user_fk %}
 <button method="DELETE" action="/api-delete-travel/{{travel.travel_pk}}" class="deleteBtn" id="{{travel.travel_pk}}">Delete</button>
+<button mix-get="/api-get-travel-form/{{travel.travel_pk}}">Edit travel</button>
 {% endif %}
 
 <main id="travelDetails">
@@ -9,7 +10,7 @@
 </main>
 {% if user.user_pk == travel.user_fk %}
 <script type="module">
-    import { deleteTravel } from '/static/eventListeners.js'
+    import { deleteTravel, loadCountries } from '/static/eventListeners.js'
     deleteTravel()
 </script>
 {% endif %}

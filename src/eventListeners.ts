@@ -11,6 +11,7 @@ export async function loadCountries() {
             option.textContent = country.country_name;
             countrySelect.appendChild(option)
         })
+        console.log(countries)
     })
 }
 export async function loadTravels() {
@@ -44,5 +45,13 @@ export function deleteTravel() {
         deleteBtn.addEventListener("click", () => {
             createDialogModal(deleteBtn)
         })
+    })
+}
+
+export async function getCountriesOnLoad(){
+    const travelForm = document.getElementById("travel_update_form");
+
+    travelForm.addEventListener("load", ()=> {
+        loadCountries();
     })
 }
