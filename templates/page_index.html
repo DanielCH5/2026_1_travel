@@ -1,13 +1,10 @@
 {% include "_header.html" %}
-<ul>
-    <li>Please import the DB linked: root + password</li>
-    <li>Test users have been made with the following logins:</li>
-    <li>test@user.dk - 12345678</li>
-    <li>test@test.dk - password</li>
-    <li>Feel free to mess around and make your own!</li>
-</ul>
-<h1>Recently added travels</h1>
-{% include "__travel_grid.html" %}
+
+<main class="container">
+    <h1>Recently added travels</h1>
+    {% include "__travel_grid.html" %}
+
+</main>
 
 <script type="module">
     import { loadTravels } from '/static/eventListeners.js'

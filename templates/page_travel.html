@@ -8,8 +8,7 @@
 <main id="travelContainer">
 {% include "__travel_details.html" %}
 </main>
-{% if user.user_pk == travel.user_fk %}
-{% endif %}
+
 <script type="module">
     import { deleteTravel, convertTime } from '/static/eventListeners.js';
     deleteTravel();
